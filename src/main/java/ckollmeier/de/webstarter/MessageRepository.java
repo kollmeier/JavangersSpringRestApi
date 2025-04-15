@@ -1,5 +1,6 @@
 package ckollmeier.de.webstarter;
 
+import lombok.NonNull;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class MessageRepository {
      * @param id id of the message
      * @return the message with the given id as an optional
      */
-    public Optional<Message> find(final String id) {
+    public Optional<Message> find(final @NonNull String id) {
         return Optional.ofNullable(messages.get(id));
     }
 
@@ -39,7 +40,7 @@ public class MessageRepository {
      * @param message the message
      * @return the created message
      */
-    public Message create(final String name, final String message) {
+    public Message create(final @NonNull String name, final @NonNull String message) {
         lastId = Long.toString(Long.parseLong(lastId) + 1);
         Message msg = new Message(name, message, lastId);
         put(lastId, msg);
@@ -50,14 +51,16 @@ public class MessageRepository {
      * @param id id of the message
      * @param message the new message
      */
-    public void put(final String id, final Message message) {
+    public void put(final @NonNull String id, final @NonNull Message message) {
         messages.put(id, message);
     }
 
     /**
      * @param id id of the message
      */
-    public void delete(final String id) {
-        messages.remove(id);
+    public void delete(final @NonNull String id) {
+        if (messages.remove(id) == null) {
+            throw new MessageNotFoundException("Message not found");
+        }
     }
 }

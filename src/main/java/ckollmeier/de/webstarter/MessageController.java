@@ -14,7 +14,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("api/messages")
@@ -24,14 +23,14 @@ public class MessageController {
      * the message repository.
      */
     @Autowired
-    private final MessageRepository messageRepository;
+    private final MessageService messageService;
 
     /**
      * @return Response
      */
     @GetMapping("/")
     public List<Message> getAllMessages() {
-        return messageRepository.findAll();
+        return messageService.getAllMessages();
     }
 
     /**
@@ -39,10 +38,8 @@ public class MessageController {
      * @return Response
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Message> getMessage(final @PathVariable String id) {
-        Optional<Message> messageOptional = messageRepository.find(id);
-        return messageOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-
+    public Message getMessage(final @PathVariable String id) {
+        return messageService.getMessage(id);
     }
 
     /**
@@ -51,7 +48,7 @@ public class MessageController {
      */
     @PostMapping("/")
     public ResponseEntity<Message> postMessage(final @RequestBody Message message) {
-        Message msg = messageRepository.create(message.name(), message.message());
+        Message msg = messageService.createMessage(message.name(), message.message());
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -68,12 +65,7 @@ public class MessageController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMessage(final @PathVariable String id) {
-        Optional<Message> messageOptional = messageRepository.find(id);
-        if (messageOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        messageRepository.delete(id);
+        messageService.deleteMessage(id);
         return ResponseEntity.noContent().build();
     }
 
