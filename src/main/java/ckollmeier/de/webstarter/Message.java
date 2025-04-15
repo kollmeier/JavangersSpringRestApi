@@ -1,4 +1,11 @@
 package ckollmeier.de.webstarter;
 
-public record Message() {
+import lombok.With;
+
+@With
+public record Message(
+        String name,
+        String message,
+        String id
+) {
 }
