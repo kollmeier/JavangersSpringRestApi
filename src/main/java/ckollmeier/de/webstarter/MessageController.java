@@ -1,7 +1,6 @@
 package ckollmeier.de.webstarter;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,13 +22,12 @@ public class MessageController {
     /**
      * the message repository.
      */
-    @Autowired
     private final MessageService messageService;
 
     /**
      * @return Response
      */
-    @GetMapping("/")
+    @GetMapping()
     public List<Message> getAllMessages() {
         return messageService.getAllMessages();
     }
@@ -68,7 +66,7 @@ public class MessageController {
      * @param message the message to create
      * @return Response
      */
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<Message> postMessage(final @RequestBody Message message) {
         Message msg = messageService.createMessage(message.name(), message.message());
 
