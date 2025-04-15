@@ -43,16 +43,15 @@ public class MessageRepository {
     public Message create(final @NonNull String name, final @NonNull String message) {
         lastId = Long.toString(Long.parseLong(lastId) + 1);
         Message msg = new Message(name, message, lastId);
-        put(lastId, msg);
-        return msg;
+        return put(lastId, msg);
     }
 
     /**
      * @param id id of the message
      * @param message the new message
      */
-    public void put(final @NonNull String id, final @NonNull Message message) {
-        messages.put(id, message);
+    public Message put(final @NonNull String id, final @NonNull Message message) {
+        return messages.put(id, message);
     }
 
     /**

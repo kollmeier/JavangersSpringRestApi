@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,6 +41,27 @@ public class MessageController {
     @GetMapping("/{id}")
     public Message getMessage(final @PathVariable String id) {
         return messageService.getMessage(id);
+    }
+
+    /**
+     * @param message the message to update
+*    * @param id the id of the message to update
+     * @return Response
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<Message> putMessage(final @PathVariable String id, final @RequestBody Message message) {
+        Message msg = messageService.getMessage(id);
+        msg = msg.withName(message.name()).withMessage(message.message());
+
+        messageService.putMessage(id, msg);
+
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(msg.id())
+                .toUri();
+
+        return ResponseEntity.created(uri)
+                .body(msg);
     }
 
     /**
